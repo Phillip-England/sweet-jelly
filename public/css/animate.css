@@ -1,0 +1,60 @@
+/* Define keyframes for fade-in effect */
+@keyframes fadeIn {
+	from {
+	  opacity: 0;
+	}
+	to {
+	  opacity: 1;
+	}
+  }
+  
+  /* Create a class that uses the fade-in animation */
+  .fade-in {
+	animation: fadeIn 0.5s ease-in-out forwards;
+  }
+  
+
+  @keyframes fadeOut {
+	from {
+	  opacity: 1;
+	}
+	to {
+	  opacity: 0;
+	}
+  }
+  
+  /* Create a class that uses the fade-out animation */
+  .fade-out {
+	animation: fadeOut 0.5s ease-in-out;
+  }
+
+
+  @keyframes stretch {
+	from {
+	  width: 0;
+	  opacity: 0;
+	}
+	to {
+	  width: 100vw; /* 100% of the viewport width */
+	  opacity: 100;
+	}
+  }
+  
+  /* Create a class that uses the stretch animation */
+  .stretch {
+	animation: stretch 0.5s ease-in-out forwards;
+  }
+
+  @keyframes fold {
+	from {
+	  width: 100vw; /* 100% of the viewport width */
+	}
+	to {
+	  width: 0;
+	}
+  }
+  
+  /* Create a class that uses the fold animation */
+  .fold {
+	animation: fold 1s ease-in-out forwards;
+  }

@@ -1,0 +1,17 @@
+{
+  "name": "cfasuite",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "dev": "npx nodemon --exec go run main.go --signal SIGTERM"
+  },
+  "dependencies": {
+    "nodemon": "^3.0.2"
+  }
+}

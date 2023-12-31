@@ -4,6 +4,7 @@ import (
 	"math/rand"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -42,4 +43,19 @@ func GenerateRandomString(length int) string {
 
 func IsDevMode() bool {
 	return os.Getenv("ENV") == "dev"
+}
+
+func StringToInt(s string) (int, error) {
+    i, err := strconv.Atoi(s)
+    if err != nil {
+        return 0, err
+    }
+    return i, nil
+}
+
+func InsteadOfEmptyString(potentialEmptyString string, replacementString string) string {
+	if potentialEmptyString == "" {
+		return replacementString
+	}
+	return potentialEmptyString
 }

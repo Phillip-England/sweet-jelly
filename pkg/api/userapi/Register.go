@@ -4,6 +4,7 @@ import (
 	"cfasuite/pkg/database"
 	"cfasuite/pkg/model/usermod"
 	"cfasuite/pkg/mw"
+	"cfasuite/pkg/util"
 	"database/sql"
 	"fmt"
 	"net/http"
@@ -20,14 +21,22 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	password := r.PostForm.Get("password")
 	firstName := r.PostForm.Get("firstName")
 	lastName := r.PostForm.Get("lastName")
+	locationNumber := r.PostForm.Get("locationNumber")
+	locationNumberInt, err := util.StringToInt(locationNumber)
+	if err != nil {
+		http.Redirect(w, r, "/admin/users?RegisterUserFormErr=location number must be a number", http.StatusSeeOther)
+		return
+	}
+
 	user := &usermod.Model{
 		DB: db,
 		FirstName: firstName,
 		LastName:  lastName,
 		Email:     email,
+		LocationNumber: locationNumberInt,
 		Password:  password,
 	}
-	err := database.DbExists(user)
+	err = database.DbExists(user)
 	if err != nil {
 		http.Redirect(w, r, "/admin/users?RegisterUserFormErr=email already taken", http.StatusSeeOther)
 		return

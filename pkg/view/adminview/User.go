@@ -37,6 +37,7 @@ func User(w http.ResponseWriter, r *http.Request) {
     }
 
     components := []string{
+		comp.Header("Admin User Page"),
         comp.AdminNav(),
         comp.UserDetails(user),
 		comp.UpdateUserForm(user, r, updateUserFormErr),

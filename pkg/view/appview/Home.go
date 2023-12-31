@@ -23,6 +23,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
         Title: "CFA Suite - User Details",
     }
     components := []string{
+		comp.Header("App Home Page"),
 		comp.TeamNav(),
 		comp.UserDetails(user),
 		comp.UserPhoto(user),

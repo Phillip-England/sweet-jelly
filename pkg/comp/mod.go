@@ -45,6 +45,8 @@ func RegisterUserForm(formErr string) string {
 			<input name='lastName' type='text' />
 			<label for='email'>email</label>
 			<input name='email' type='text' />
+			<label for='locationNumber'>location number</label>
+			<input type='text' name='locationNumber' />
 			<label for='password'>password</label>
 			<input type='password' name='password' />
 			<input type='submit' />
@@ -81,7 +83,10 @@ func TeamNav() string {
 					<a href='/app'>Home</a>
 				</li>
 				<li>
-				<a href='/app/bio'>Update Bio</a>
+					<a href='/app/bio'>Update Bio</a>
+				</li>
+				<li>
+					<a href='/app/peers'>Peers</a>
 				</li>
 				<li>
 					<a href='/api/user/logout'>Logout</a>
@@ -136,10 +141,18 @@ func UpdateUserForm(user *usermod.Model, r *http.Request, formErr string) string
 		<input name='lastName' type='text' value='%s' />
 		<label for='email'>email</label>
 		<input name='email' type='text' value='%s' />
+		<label for='locationNumber'>location number</label>
+		<input name='locationNumber' type='text' value='%d' />
+		<label for='family'>Family</label>
+		<textarea name='family'>%s</textarea>
+		<label for='hobbies'>Hobbies</label>
+		<textarea name='hobbies'>%s</textarea>
+		<label for='dreams'>Dreams</label>
+		<textarea name='dreams'>%s</textarea>
 		<label for='photo'>photo</label>
 		<input type='file' name='photo' value='%b' accept='image/*' />
 		<input type='submit' />
-	</form>`, r.URL.Path, formErr, user.ID, user.FirstName, user.LastName, user.Email, user.Photo)
+	</form>`, r.URL.Path, formErr, user.ID, user.FirstName, user.LastName, user.Email, user.LocationNumber, user.Family, user.Hobbies, user.Dreams, user.Photo)
 }
 
 func UserBioForm(user *usermod.Model, r *http.Request, formErr string) string {
@@ -197,4 +210,46 @@ func LocationDetails(location *locationmod.Model) string {
             <p>Location ID: %d</p>
         </div>
     `, location.Name, location.ID)
+}
+
+func Todo(items []string) string {
+	var todoListHTML string
+	for _, item := range items {
+		todoItemHTML := fmt.Sprintf("<li>%s</li>", item)
+		todoListHTML += todoItemHTML
+	}
+
+	return fmt.Sprintf("<ul>%s</ul>", todoListHTML)
+}
+
+func PeerList(users []usermod.Model) string {
+	var userListHTML string
+	for _, user := range users {
+		userHTML := fmt.Sprintf(`
+			<li>
+				<a href="/app/peer/%d">%d %s %s %s</a>
+			</li>
+		`, user.ID, user.ID, user.FirstName, user.LastName, user.Email)
+		userListHTML += userHTML
+	}
+
+	return fmt.Sprintf(`
+		<ul>
+			%s
+		</ul>
+	`, userListHTML)
+}
+
+
+func UserBio(peer *usermod.Model) string {
+	return fmt.Sprintf(`
+		<div>
+			<p>Family Details:</p>
+			<p>%s</p>
+			<p>Hobbies:</p>
+			<p>%s</p>
+			<p>Dreams:</p>
+			<p>%s</p>
+		</div>
+	`, util.InsteadOfEmptyString(peer.Family, "not set"), util.InsteadOfEmptyString(peer.Hobbies, "not set"), util.InsteadOfEmptyString(peer.Dreams, "not set"))
 }

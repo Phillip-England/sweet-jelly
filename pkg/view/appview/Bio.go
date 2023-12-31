@@ -25,6 +25,7 @@ func Bio(w http.ResponseWriter, r *http.Request) {
         Title: "CFA Suite - User Details",
     }
     components := []string{
+		comp.Header("App Bio Page"),
 		comp.TeamNav(),
 		comp.UserDetails(user),
 		comp.UserBioForm(user, r, bioFormErr),

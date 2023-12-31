@@ -10,6 +10,7 @@ import (
 	"cfasuite/pkg/view/guestview"
 	"fmt"
 	"net/http"
+	"os"
 	"os/exec"
 	"path/filepath"
 
@@ -45,8 +46,9 @@ func main() {
 		fmt.Println("Error loading .env file")
 	}
 
-	db, err := database.Init(false)
+	db, err := database.Init(os.Getenv("RESET_DB"))
 	if err != nil {
+		fmt.Println(err)
 		panic("database failed to connect")
 	}
 	defer db.Close()
@@ -67,6 +69,8 @@ func main() {
 	// app views
 	http.HandleFunc("/app", mw.MwDb(db, mw.Auth(appview.Home)))
 	http.HandleFunc("/app/bio", mw.MwDb(db, mw.Auth(appview.Bio)))
+	http.HandleFunc("/app/peers", mw.MwDb(db, mw.Auth(appview.Peers)))
+	http.HandleFunc("/app/peer/", mw.MwDb(db, mw.Auth(appview.Peer)))
 
 	// user api
 	http.HandleFunc("/api/user/login", mw.MwDb(db, userapi.Login))

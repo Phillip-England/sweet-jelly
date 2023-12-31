@@ -9,7 +9,8 @@
     "typescript": "^5.0.0"
   },
   "scripts": {
-    "dev": "npx nodemon --exec go run main.go --signal SIGTERM"
+    "dev": "npx nodemon --exec go run main.go --signal SIGTERM",
+    "spill": "gofmt ./ >> Bundle.go"
   },
   "dependencies": {
     "nodemon": "^3.0.2"

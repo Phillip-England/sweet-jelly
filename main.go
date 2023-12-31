@@ -1,74 +1,84 @@
 package main
 
 import (
-	"cfasuite/pkg"
+	"cfasuite/pkg/api/locationapi"
+	"cfasuite/pkg/api/userapi"
+	"cfasuite/pkg/database"
+	"cfasuite/pkg/mw"
+	"cfasuite/pkg/view/adminview"
+	"cfasuite/pkg/view/appview"
+	"cfasuite/pkg/view/guestview"
 	"fmt"
 	"net/http"
+	"os/exec"
+	"path/filepath"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
+
+func HandlerPublicFiles(w http.ResponseWriter, r *http.Request) {
+	filePath := r.URL.Path[len("/public/"):]
+	fullPath := filepath.Join(".", "public", filePath)
+	http.ServeFile(w, r, fullPath)
+}
 
 func main() {
 
 	// tailwindCommand := exec.Command("tailwind", "-i", "./public/css/input.css", "-o", "./public/css/output.css")
 	// _, _ = tailwindCommand.CombinedOutput()
 
-	// dotenv
-	err := godotenv.Load()
+	formatCode := exec.Command("go", "fmt", "./")
+	err := formatCode.Run()
+	if err != nil {
+		panic("failed to format code")
+	}
+
+	tidyCode := exec.Command("go", "mod", "tidy")
+	err = tidyCode.Run()
+	if err != nil {
+		panic("failed to tidy code")
+	}
+
+	err = godotenv.Load()
 	if err != nil {
 		fmt.Println("Error loading .env file")
 	}
 
-	// db connection
-	db, err := pkg.ConnectDb()
+	db, err := database.Init(false)
 	if err != nil {
-		message := fmt.Sprintf("failed to connect to db because of this err: %s", err.Error())
-		fmt.Println(message)
-		return
+		panic("database failed to connect")
 	}
 	defer db.Close()
 
-	initDb := false
-
-	if initDb {
-
-		// deleting all tables
-		err = pkg.DbDeleteAllTables(db)
-		if err != nil {
-			message := fmt.Sprintf(`failed to delete all tables in db due to: %s`, err.Error())
-			fmt.Println(message)
-			return
-		}
-	
-		// creating user table
-		err = pkg.DbCreateUserTable(db)
-		if err != nil {
-			message := fmt.Sprintf(`failed to create user table due to this error: %s`, err.Error())
-			fmt.Println(message)
-			return
-		}
-
-	}
-
 	// serving public files
-	http.HandleFunc("/public/", pkg.HandlerPublicFiles)
+	http.HandleFunc("/public/", HandlerPublicFiles)
 
-	// serving views
-	http.HandleFunc("/", pkg.HandlerViewLogin)
-	http.HandleFunc("/admin", pkg.HandlerViewAdminHome)
-	http.HandleFunc("/admin/users", pkg.MwDb(db, pkg.HandlerViewAdminUsers))
-	http.HandleFunc("/admin/user/", pkg.MwDb(db, pkg.HandlerViewAdminUser))
+	// guest views
+	http.HandleFunc("/", guestview.Login)
 
+	// admin views
+	http.HandleFunc("/admin", adminview.Home)
+	http.HandleFunc("/admin/users", mw.MwDb(db, adminview.Users))
+	http.HandleFunc("/admin/user/", mw.MwDb(db, adminview.User))
+	http.HandleFunc("/admin/locations", mw.MwDb(db, adminview.Locations))
+	http.HandleFunc("/admin/location/", mw.MwDb(db, adminview.Location))
 
-	// serving api
-	http.HandleFunc("/api/user/register", pkg.MwDb(db, pkg.HandlerApiRegisterUser))
-	http.HandleFunc("/api/user/update", pkg.MwDb(db, pkg.HandlerApiUpdateUser))
-	http.HandleFunc("/api/user/login", pkg.MwDb(db, pkg.HandlerApiLogin))
-	http.HandleFunc("/api/user/logout", pkg.HandlerApiLogout)
+	// app views
+	http.HandleFunc("/app", mw.MwDb(db, mw.Auth(appview.Home)))
+	http.HandleFunc("/app/bio", mw.MwDb(db, mw.Auth(appview.Bio)))
+
+	// user api
+	http.HandleFunc("/api/user/login", mw.MwDb(db, userapi.Login))
+	http.HandleFunc("/api/user/bio", mw.MwDb(db, mw.Auth(userapi.Bio)))
+	http.HandleFunc("/api/user/logout", mw.MwDb(db, userapi.Logout))
+	http.HandleFunc("/api/user/register", mw.MwDb(db, userapi.Register))
+	http.HandleFunc("/api/user/update", mw.MwDb(db, userapi.Update))
+
+	// location api
+	http.HandleFunc("/api/location/create", mw.MwDb(db, locationapi.Create))
 
 	// running
 	http.ListenAndServe(":8080", nil)
 
-	
 }

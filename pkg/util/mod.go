@@ -1,8 +1,9 @@
-package pkg
+package util
 
 import (
 	"math/rand"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 
@@ -37,4 +38,8 @@ func GenerateRandomString(length int) string {
 		b[i] = charset[seededRand.Intn(len(charset))]
 	}
 	return string(b)
+}
+
+func IsDevMode() bool {
+	return os.Getenv("ENV") == "dev"
 }

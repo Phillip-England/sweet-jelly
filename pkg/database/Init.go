@@ -33,7 +33,7 @@ func Init(resetDbEnv string) (*sql.DB, error) {
 				return nil, err
 			}
 
-			err = DbCreateTestLocation(db)
+			err = DbCreateTestLocations(db)
 			if err != nil {
 				return nil, err
 			}

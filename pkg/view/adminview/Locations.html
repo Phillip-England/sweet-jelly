@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/public/css/output.css">
+    <link rel="stylesheet" href="/public/css/animate.css">
+    <script src='https://unpkg.com/htmx.org@1.9.9'></script>
+    <title>{{ .Title }}</title>
+</head>
+<body hx-boost="true">
+	
+	<!-- header content -->
+	<header class="p-4 grid">
+
+		<!-- logo -->
+		<div class="w-60">
+			<img src="/public/svg/logo.svg" alt="Logo">
+		</div>
+
+		<!-- navigation -->
+		<nav class="px-4 pt-8">
+			<ul class="flex flex-row flex-wrap gap-4 text-black underline">
+				<li>
+					<a href="/admin" hx-indicator="#loading-overlay" >Home</a>
+				</li>
+				<li>
+					<a href="/admin/locations" class="text-red" hx-indicator="#loading-overlay" >Locations</a>
+				</li>
+				<li>
+					<a href="/admin/users" hx-indicator="#loading-overlay" >Users</a>
+				</li>
+				<li>
+					<a href="/api/user/logout" hx-indicator="#loading-overlay" >Logout</a>
+				</li>
+			</ul>
+		</nav>
+
+	</header>
+
+
+	<!-- loading overlay -->
+	<div id="loading-overlay" class="flex-indicator fixed inset-0 bg-gray flex items-center justify-center">
+		<div class="h-32 w-32 absolute self-center mb-80 rounded-full border-4 border-white border-t-black animate-spin"></div>
+	</div>
+
+	
+	<!-- main content  -->
+	<main class="grid">
+
+		<!-- create location form -->
+		<form action='/api/location/create' method='POST' hx-indicator="#loading-overlay" class="justify-self fade-in grid p-6 gap-4 md:p-8 md:w-[750px] md:place-self-start">
+			<h2 class="text-2xl font-bold">Create Location</h2>
+			<p class="text-red text-sm">{{ .LocationFormErr }}</p>
+			<label class="text-sm" for='name'>Name</label>
+			<input class="border rounded text-sm p-1" name='name' type='text' />
+			<label class="text-sm" for='number'>Number</label>
+			<input class="border rounded text-sm p-1" name='number' type='number' />
+			<input class="bg-black text-sm rounded text-white py-2 mt-4" type='submit' />
+		</form>
+
+		<!-- Display existing locations -->
+		<section class="fade-in grid p-6 gap-4 md:p-8 md:w-[750px] md:place-self-start">
+			<h2 class="text-2xl font-bold">Existing Locations</h2>
+			{{ if .Locations }}
+				<ul class="flex flex-wrap flex-row gap-6">
+					{{ range .Locations }}
+						<li class="rounded border bg-white text-black p-4 hover:bg-black hover:text-white">
+							<a hx-indicator="#loading-overlay" href="/admin/location/{{ .ID }}">
+								<p>Name: {{ .Name }}</p>
+								<p>Number: {{ .Number }}</p>
+							</a>
+							<!-- Add additional fields as needed -->
+						</li>
+					{{ end }}
+				</ul>
+			{{ else }}
+				<p>No locations found.</p>
+			{{ end }}
+		</section>
+
+
+	</main>
+
+
+</body>
+</html>

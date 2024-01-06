@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/public/css/output.css">
+    <link rel="stylesheet" href="/public/css/animate.css">
+    <script src='https://unpkg.com/htmx.org@1.9.9'></script>
+    <title>{{ .Title }}</title>
+</head>
+<body hx-boost="true">
+	
+	<!-- header content -->
+	<header class="p-4 grid">
+
+		<!-- logo -->
+		<div class="w-60">
+			<img src="/public/svg/logo.svg" alt="Logo">
+		</div>
+
+		<!-- navigation -->
+		<nav class="px-4 pt-8">
+			<ul class="flex flex-row flex-wrap gap-4 text-black underline">
+				<li>
+					<a href="/admin" class="text-red" hx-indicator="#loading-overlay" >Home</a>
+				</li>
+				<li>
+					<a href="/admin/locations" hx-indicator="#loading-overlay" >Locations</a>
+				</li>
+				<li>
+					<a href="/admin/users" hx-indicator="#loading-overlay" >Users</a>
+				</li>
+				<li>
+					<a href="/api/user/logout" hx-indicator="#loading-overlay" >Logout</a>
+				</li>
+			</ul>
+		</nav>
+
+	</header>
+
+
+	<!-- loading overlay -->
+	<div id="loading-overlay" class="flex-indicator fixed inset-0 bg-gray flex items-center justify-center">
+		<div class="h-32 w-32 absolute self-center mb-80 rounded-full border-4 border-white border-t-black animate-spin"></div>
+	</div>
+
+	
+	<!-- main content  -->
+	<main class="grid">
+
+
+
+	</main>
+
+
+</body>
+</html>

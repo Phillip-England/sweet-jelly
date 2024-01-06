@@ -63,17 +63,29 @@ func DbCreateSessionTable(db *sql.DB) error {
 	return nil
 }
 
-func DbCreateTestLocation(db *sql.DB) error {
-	l := locationmod.NewLocationModel(db)
-	l.Name = "Southroads"
-	l.Number = 3253
-	controller := DbController(l)
-	if err := DbInsert(controller); err != nil {
+func DbCreateTestLocations(db *sql.DB) error {
+	// Create Southroads
+	l1 := locationmod.NewLocationModel(db)
+	l1.Name = "Southroads"
+	l1.Number = 3253
+	controller1 := DbController(l1)
+	if err := DbInsert(controller1); err != nil {
 		return err
 	}
-	fmt.Println("Test location created successfully")
+
+	// Create Utica
+	l2 := locationmod.NewLocationModel(db)
+	l2.Name = "Utica"
+	l2.Number = 3991
+	controller2 := DbController(l2)
+	if err := DbInsert(controller2); err != nil {
+		return err
+	}
+
+	fmt.Println("Test locations created successfully")
 	return nil
 }
+
 
 func DbCreateUserTable(db *sql.DB) error {
 	createUserTableSQL := `

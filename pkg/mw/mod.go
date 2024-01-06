@@ -7,12 +7,36 @@ import (
 	"context"
 	"database/sql"
 	"net/http"
+	"os"
 )
 
 type contextKey string
 const DbKey contextKey = "db"
 const AuthKey contextKey = "auth"
 
+
+// runs auth and ensures an admin is using the associate endpoint
+func AdminAuth(next http.HandlerFunc) http.HandlerFunc {
+	return func (w http.ResponseWriter, r *http.Request) {
+		db, ok := r.Context().Value(DbKey).(*sql.DB)
+		if !ok {
+			http.Error(w, "Failed to get database connection", http.StatusInternalServerError)
+			return
+		}
+		sessionTokenCookie, err := r.Cookie("session-token")
+		if err != nil {
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+			return
+		}
+		sessionToken := sessionTokenCookie.Value
+		if sessionToken != os.Getenv("ADMIN_SESSION_TOKEN") {
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+			return
+		}
+		ctx := context.WithValue(r.Context(), DbKey, db)
+		next(w, r.WithContext(ctx))
+	}
+}
 
 // injects the db into the http context
 func MwDb(db *sql.DB, next http.HandlerFunc) http.HandlerFunc {

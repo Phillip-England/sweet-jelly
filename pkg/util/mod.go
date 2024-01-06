@@ -2,10 +2,12 @@ package util
 
 import (
 	"math/rand"
+	"net/http"
 	"net/url"
 	"os"
 	"strconv"
 	"strings"
+	"text/template"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -45,6 +47,13 @@ func IsDevMode() bool {
 	return os.Getenv("ENV") == "dev"
 }
 
+func IfDevModeThen(value string) string {
+	if os.Getenv("ENV") == "dev" {
+		return value
+	}
+	return ""
+}
+
 func StringToInt(s string) (int, error) {
     i, err := strconv.Atoi(s)
     if err != nil {
@@ -58,4 +67,19 @@ func InsteadOfEmptyString(potentialEmptyString string, replacementString string)
 		return replacementString
 	}
 	return potentialEmptyString
+}
+
+func RenderTemplate(w http.ResponseWriter, tmplFile string, data interface{}) {
+	// Parse the template from the file
+	tmpl, err := template.ParseFiles(tmplFile)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Execute the template, passing the data to it
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }

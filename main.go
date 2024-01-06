@@ -11,7 +11,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"os/exec"
 	"path/filepath"
 
 	"github.com/joho/godotenv"
@@ -26,22 +25,7 @@ func HandlerPublicFiles(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 
-	// tailwindCommand := exec.Command("tailwind", "-i", "./public/css/input.css", "-o", "./public/css/output.css")
-	// _, _ = tailwindCommand.CombinedOutput()
-
-	formatCode := exec.Command("go", "fmt", "./")
-	err := formatCode.Run()
-	if err != nil {
-		panic("failed to format code")
-	}
-
-	tidyCode := exec.Command("go", "mod", "tidy")
-	err = tidyCode.Run()
-	if err != nil {
-		panic("failed to tidy code")
-	}
-
-	err = godotenv.Load()
+	err := godotenv.Load()
 	if err != nil {
 		fmt.Println("Error loading .env file")
 	}
@@ -60,7 +44,7 @@ func main() {
 	http.HandleFunc("/", guestview.Login)
 
 	// admin views
-	http.HandleFunc("/admin", adminview.Home)
+	http.HandleFunc("/admin", mw.MwDb(db, mw.AdminAuth(adminview.Home)))
 	http.HandleFunc("/admin/users", mw.MwDb(db, adminview.Users))
 	http.HandleFunc("/admin/user/", mw.MwDb(db, adminview.User))
 	http.HandleFunc("/admin/locations", mw.MwDb(db, adminview.Locations))

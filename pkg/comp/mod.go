@@ -13,11 +13,26 @@ func Header(text string) string {
 	return fmt.Sprintf(`<h1>%s</h1>`, text)
 }
 
+func BaseForm(title string, inputs []string, r *http.Request, formErrParamName string) string {
+	formErr := r.URL.Query().Get(formErrParamName)
+	inputElements := ""
+	for _, input := range inputs {
+		inputElements += input
+	}
+
+	return fmt.Sprintf(`
+		<form>
+			<h2>%s</h2>
+			<p>%s</p>
+			%s
+		</form>
+	`, title, formErr, inputElements)
+}
+
 func LoginForm(formErr string) string {
 	var emailValue string
 	var passwordValue string
 	if util.IsDevMode() {
-		fmt.Println("dev mode!")
 		emailValue = "test@gmail.com"
 		passwordValue = "aspoaspo"
 	}

@@ -18,6 +18,8 @@ type Model struct {
 	Family       string
 	Hobbies      string
 	Dreams       string
+	PhotoBase64  string
+	NoPhoto      bool
 }
 
 func NewUserModel(db *sql.DB) *Model {
@@ -65,10 +67,15 @@ func (u *Model) GetById() error {
 	`
 
 	err := u.DB.QueryRow(query, u.ID).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.LocationNumber, &u.Password, &u.Photo, &u.Family, &u.Hobbies, &u.Dreams)
+	u.PhotoBase64 = util.ConvertPhotoToBase64(u.Photo)
+	if len(u.Photo) == 0 {
+		u.NoPhoto = true
+	} else {
+		u.NoPhoto = false
+	}
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
@@ -80,13 +87,18 @@ func (u *Model) GetByEmail(email string) error {
 	`
 
 	err := u.DB.QueryRow(query, email).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.LocationNumber, &u.Password, &u.Photo, &u.Family, &u.Hobbies, &u.Dreams)
+	u.PhotoBase64 = util.ConvertPhotoToBase64(u.Photo)
+	if len(u.Photo) == 0 {
+		u.NoPhoto = true
+	} else {
+		u.NoPhoto = false
+	}
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return fmt.Errorf("user with email '%s' not found", email)
 		}
 		return err
 	}
-
 	return nil
 }
 

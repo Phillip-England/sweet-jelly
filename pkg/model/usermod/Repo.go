@@ -1,6 +1,9 @@
 package usermod
 
-import "database/sql"
+import (
+	"cfasuite/pkg/util"
+	"database/sql"
+)
 
 type Repo struct {
 	DB *sql.DB
@@ -28,6 +31,12 @@ func (ur *Repo) GetAll() error {
 		if err := rows.Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.Password, &u.Photo); err != nil {
 			return err
 		}
+		u.PhotoBase64 = util.ConvertPhotoToBase64(u.Photo)
+		if len(u.Photo) == 0 {
+			u.NoPhoto = true
+		} else {
+			u.NoPhoto = false
+		}
 		users = append(users, u)
 	}
 
@@ -53,6 +62,12 @@ func (ur *Repo) GetAllByLocationNumber(locationNumber int) error {
 		var u Model
 		if err := rows.Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.Password, &u.Photo); err != nil {
 			return err
+		}
+		u.PhotoBase64 = util.ConvertPhotoToBase64(u.Photo)
+		if len(u.Photo) == 0 {
+			u.NoPhoto = true
+		} else {
+			u.NoPhoto = false
 		}
 		users = append(users, u)
 	}

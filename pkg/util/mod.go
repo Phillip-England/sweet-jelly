@@ -1,6 +1,7 @@
 package util
 
 import (
+	"encoding/base64"
 	"math/rand"
 	"net/http"
 	"net/url"
@@ -82,4 +83,16 @@ func RenderTemplate(w http.ResponseWriter, tmplFile string, data interface{}) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+func ConvertPhotoToBase64(photo []byte) string {
+    return base64.StdEncoding.EncodeToString(photo)
+}
+
+func ReadFile(filePath string) ([]byte, error) {
+	content, err := os.ReadFile(filePath)
+	if err != nil {
+		return nil, err
+	}
+	return content, nil
 }

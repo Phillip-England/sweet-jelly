@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/public/css/output.css">
+    <link rel="stylesheet" href="/public/css/animate.css">
+    <script src='https://unpkg.com/htmx.org@1.9.9'></script>
+    <title>{{ .Title }}</title>
+</head>
+<body hx-boost="true">
+	
+	<!-- header content -->
+	<header class="p-4 grid">
+
+		<!-- logo -->
+		<div class="w-60">
+			<img src="/public/svg/logo.svg" alt="Logo">
+		</div>
+
+		<!-- navigation -->
+		<nav class="px-4 pt-8">
+			<ul class="flex flex-row flex-wrap gap-4 text-black underline">
+				<li>
+					<a href="/admin" hx-indicator="#loading-overlay" >Home</a>
+				</li>
+				<li>
+					<a href="/admin/locations" hx-indicator="#loading-overlay" >Locations</a>
+				</li>
+				<li>
+					<a href="/admin/users" class="text-red" hx-indicator="#loading-overlay" >Users</a>
+				</li>
+				<li>
+					<a href="/api/user/logout" hx-indicator="#loading-overlay" >Logout</a>
+				</li>
+			</ul>
+		</nav>
+
+	</header>
+
+
+	<!-- loading overlay -->
+	<div id="loading-overlay" class="flex-indicator fixed inset-0 bg-gray flex items-center justify-center">
+		<div class="h-32 w-32 absolute self-center mb-80 rounded-full border-4 border-white border-t-black animate-spin"></div>
+	</div>
+
+	
+	<!-- main content  -->
+	<main class="grid">
+
+		<!-- register user form -->
+		<form hx-indicator="#loading-overlay" action="/api/user/register" method="POST" class="justify-self fade-in grid p-6 gap-4 md:p-8 md:w-[750px] md:place-self-start">
+			<h2 class="text-2xl font-bold">Register Users</h2>
+			<p class="text-red text-sm">{{ .RegisterUserErr }}</p>
+			<label class="text-sm" for='firstName'>first name</label>
+			<input class="border rounded text-sm p-1" name='firstName' type='text' />
+			<label class="text-sm" for='lastName'>last name</label>
+			<input class="border rounded text-sm p-1" name='lastName' type='text' />
+			<label class="text-sm" for='email'>email</label>
+			<input class="border rounded text-sm p-1" name='email' type='text' />
+			<label class="text-sm" for='locationNumber'>location number</label>
+			<input type='text' name='locationNumber' class="border rounded text-sm p-1" />
+			<label class="text-sm" for='password'>password</label>
+			<input class="border rounded text-sm p-1" type='password' name='password' />
+			<input class="bg-black text-sm rounded text-white py-2 mt-4" type='submit' />
+		</form>
+
+		<!-- users all users -->
+		<section id="location-users" class="fade-in grid p-6 gap-4 md:p-8 md:w-[750px] md:place-self-start">
+			<h2 class="text-2xl font-bold">All Users</h2>
+			{{ if .Users }}
+				<ul class="flex flex-col gap-4">
+					{{ range .Users }}
+						<li class="flex rounded border bg-white text-black hover:bg-black hover:text-white items-center">
+							<a hx-indicator="#loading-overlay" href="/admin/user/{{ .ID }}" class="flex items-center w-full p-4">
+								{{ if .NoPhoto }}
+									<img src="/public/img/person.jpg" alt="{{ .FirstName }} {{ .LastName }}" class="w-10 h-10 rounded-full mr-4">
+								{{ else }}
+									<img src="data:image/png;base64,{{ .PhotoBase64 }}" alt="{{ .FirstName }} {{ .LastName }}" class="w-10 h-10 rounded-full mr-4">
+								{{ end }}
+								<p>{{ .FirstName }} {{ .LastName }}</p>
+							</a>
+							<!-- Add additional fields as needed -->
+						</li>
+					{{ end }}
+				</ul>
+			{{ else }}
+				<p>No users found</p>
+			{{ end }}
+		</section>
+
+
+	</main>
+
+
+</body>
+</html>

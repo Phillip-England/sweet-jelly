@@ -27,7 +27,6 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/admin/users?RegisterUserFormErr=location number must be a number", http.StatusSeeOther)
 		return
 	}
-
 	user := &usermod.Model{
 		DB: db,
 		FirstName: firstName,

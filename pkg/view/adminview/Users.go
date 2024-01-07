@@ -1,7 +1,6 @@
 package adminview
 
 import (
-	"cfasuite/pkg/comp"
 	"cfasuite/pkg/database"
 	"cfasuite/pkg/model/usermod"
 	"cfasuite/pkg/mw"
@@ -10,6 +9,13 @@ import (
 	"net/http"
 	"sort"
 )
+
+type UsersData struct {
+    Title string
+    RegisterUserErr string
+    Users []usermod.Model
+    NoPhoto bool
+}
 
 func Users(w http.ResponseWriter, r *http.Request) {
     db, ok := r.Context().Value(mw.DbKey).(*sql.DB)
@@ -23,22 +29,12 @@ func Users(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "Failed to fetch users", http.StatusInternalServerError)
         return
     }
-
-    // Sort users alphabetically by first name
     sort.Slice(userRepo.Users, func(i, j int) bool {
         return userRepo.Users[i].FirstName < userRepo.Users[j].FirstName
     })
-
-    b := util.PageBuilder{
-        Title: "CFA Suite - Users",
-    }
-    components := []string{
-        comp.Header("Admin Users Page"),
-        comp.AdminNav(),
-        comp.RegisterUserForm(r.URL.Query().Get("RegisterUserFormErr")),
-        comp.UserList(userRepo.Users),
-    }
-
-    b.AddComponents(components)
-    w.Write(b.HtmlBytes())
+    util.RenderTemplate(w, "./pkg/view/adminview/Users.html", UsersData{
+        Title: "",
+        RegisterUserErr: r.URL.Query().Get("RegisterUserErr"),
+        Users: userRepo.Users,
+    })
 }

@@ -48,32 +48,36 @@
 	<!-- main content  -->
 	<main class="grid">
 
-		<!-- create location form -->
-		<form action='/api/location/create' method='POST' hx-indicator="#loading-overlay" class="justify-self fade-in grid p-6 gap-4 md:p-8 md:w-[750px] md:place-self-start">
-			<h2 class="text-2xl font-bold">Create Location</h2>
-			<p class="text-red text-sm">{{ .LocationFormErr }}</p>
-			<label class="text-sm" for='name'>Name</label>
-			<input class="border rounded text-sm p-1" name='name' type='text' />
-			<label class="text-sm" for='number'>Number</label>
-			<input class="border rounded text-sm p-1" name='number' type='number' />
-			<input class="bg-black text-sm rounded text-white py-2 mt-4" type='submit' />
-		</form>
+		<!-- location details -->
+		<section class="p-6 grid gap-2">
+			<h2 class="font-bold text-2xl">Location Details</h2>
+			<div>
+				<p>Name: {{ .Location.Name }}</p>
+				<p>Number: {{ .Location.Number }}</p>
+			</div>
+		</section>
 
-		<!-- Display existing locations -->
-		<section class="fade-in grid p-6 gap-4 md:p-8 md:w-[750px] md:place-self-start">
-			<h2 class="text-2xl font-bold">Existing Locations</h2>
-			{{ if .Locations }}
-				<ul class="flex flex-wrap flex-row gap-6">
-					{{ range .Locations }}
-						<li class="rounded border bg-white text-sm text-black p-2 hover:bg-black hover:text-white">
-							<a hx-indicator="#loading-overlay" href="/admin/location/{{ .ID }}">
-								<p>{{ .Name }} {{ .Number }}</p>
+		<!-- users all users -->
+		<section id="location-users" class="fade-in grid p-6 gap-4 md:p-8 md:w-[750px] md:place-self-start">
+			<h2 class="text-2xl font-bold">Location Users</h2>
+			{{ if .Users }}
+				<ul class="flex flex-col gap-4">
+					{{ range .Users }}
+						<li class="flex rounded border bg-white text-black hover:bg-black hover:text-white items-center">
+							<a hx-indicator="#loading-overlay" href="/admin/user/{{ .ID }}" class="flex items-center w-full p-4">
+								{{ if .NoPhoto }}
+									<img src="/public/img/person.jpg" alt="{{ .FirstName }} {{ .LastName }}" class="w-10 h-10 rounded-full mr-4">
+								{{ else }}
+									<img src="data:image/png;base64,{{ .PhotoBase64 }}" alt="{{ .FirstName }} {{ .LastName }}" class="w-10 h-10 rounded-full mr-4">
+								{{ end }}
+								<p>{{ .FirstName }} {{ .LastName }}</p>
 							</a>
+							<!-- Add additional fields as needed -->
 						</li>
 					{{ end }}
 				</ul>
 			{{ else }}
-				<p>No locations found.</p>
+				<p>No users found</p>
 			{{ end }}
 		</section>
 

@@ -1,7 +1,6 @@
 package adminview
 
 import (
-	"cfasuite/pkg/comp"
 	"cfasuite/pkg/database"
 	"cfasuite/pkg/model/locationmod"
 	"cfasuite/pkg/model/usermod"
@@ -10,8 +9,17 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 )
+
+type LocationData struct {
+    Title string
+    Location locationmod.Model
+    Users []usermod.Model
+    RegisterUserErr string
+    SessionToken string
+}
 
 func Location(w http.ResponseWriter, r *http.Request) {
     db, ok := r.Context().Value(mw.DbKey).(*sql.DB)
@@ -25,36 +33,25 @@ func Location(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "Invalid location ID", http.StatusBadRequest)
         return
     }
-
     location := &locationmod.Model{
         DB: db,
         ID: locationIDInt,
     }
-
     err = database.DbGetById(location)
     if err != nil {
         http.Error(w, fmt.Sprintf("Failed to get location details: %s", err), http.StatusInternalServerError)
         return
     }
-
     userRepo := usermod.NewUserRepo(db)
     err = userRepo.GetAllByLocationNumber(location.Number)
     if err != nil {
         http.Error(w, fmt.Sprintf("failed to load users by location: %s", err), http.StatusInternalServerError)
     }
-
-    fmt.Println(userRepo.Users)
-
-    b := util.PageBuilder{
-        Title: "CFA Suite - Location Details",
-    }
-
-	components := []string{
-		comp.Header("Admin Location Page"),
-		comp.AdminNav(),
-		comp.LocationDetails(location),
-		comp.UserList(userRepo.Users), // Add this line to include the users component
-	}
-    b.AddComponents(components)
-    w.Write(b.HtmlBytes())
+    util.RenderTemplate(w, "./pkg/view/adminview/Location.html", LocationData{
+        Title: "CFA Suite - Location",
+        Location: *location,
+        Users: userRepo.Users,
+        RegisterUserErr: r.URL.Query().Get("RegisterUserErr"),
+        SessionToken: os.Getenv("ADMIN_SESSION_TOKEN"),
+    })
 }

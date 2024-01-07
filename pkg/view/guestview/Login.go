@@ -27,7 +27,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	util.RenderTemplate(w, "./pkg/view/guestview/Login.html", LoginData{
 		Title: "CFA Suite - Login",
 		LoginFormErr: r.URL.Query().Get("LoginFormErr"),
-		EmailInputValue: util.IfDevModeThen("test@gmail.com"),
+		EmailInputValue: util.IfDevModeThen("admin"),
 		PasswordInputValue: util.IfDevModeThen("aspoaspo"),
 	})
 }

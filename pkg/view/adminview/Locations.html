@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <link rel="stylesheet" href="/public/css/output.css">
     <link rel="stylesheet" href="/public/css/animate.css">
     <script src='https://unpkg.com/htmx.org@1.9.9'></script>
@@ -46,7 +46,7 @@
 
 	
 	<!-- main content  -->
-	<main class="grid">
+	<main class="grid fade-in">
 
 		<!-- create location form -->
 		<form action='/api/location/create' method='POST' hx-indicator="#loading-overlay" class="justify-self fade-in grid p-6 gap-4 md:p-8 md:w-[750px] md:place-self-start">
@@ -63,9 +63,9 @@
 		<section class="fade-in grid p-6 gap-4 md:p-8 md:w-[750px] md:place-self-start">
 			<h2 class="text-2xl font-bold">Existing Locations</h2>
 			{{ if .Locations }}
-				<ul class="flex flex-wrap flex-row gap-6">
+				<ul class="flex flex-col">
 					{{ range .Locations }}
-						<li class="rounded border bg-white text-sm text-black p-2 hover:bg-black hover:text-white">
+						<li class="text-sm underline">
 							<a hx-indicator="#loading-overlay" href="/admin/location/{{ .ID }}">
 								<p>{{ .Name }} {{ .Number }}</p>
 							</a>

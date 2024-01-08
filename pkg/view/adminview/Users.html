@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <link rel="stylesheet" href="/public/css/output.css">
     <link rel="stylesheet" href="/public/css/animate.css">
     <script src='https://unpkg.com/htmx.org@1.9.9'></script>
@@ -46,7 +46,7 @@
 
 	
 	<!-- main content  -->
-	<main class="grid">
+	<main class="grid fade-in">
 
 		<!-- register user form -->
 		<form hx-indicator="#loading-overlay" action="/api/user/register" method="POST" class="justify-self fade-in grid p-6 gap-4 md:p-8 md:w-[750px] md:place-self-start">
@@ -71,10 +71,9 @@
 			{{ if .Users }}
 				<ul class="flex flex-col flex-wrap gap-4">
 					{{ range .Users }}
-						<li class="flex rounded border bg-white text-black hover:bg-black hover:text-white items-center p-6">
+						<li class="flex flex-col">
 							<a hx-indicator="#loading-overlay" href="/admin/user/{{ .ID }}" class="flex flex-col gap-4">
-									<h2 class="text-2xl font-bold">{{ .FirstName }} {{ .LastName }}</h2>
-									<img src="{{ if .NoPhoto }}/public/img/person.jpg{{ else }}data:image/png;base64,{{ .PhotoBase64 }}{{ end }}" alt="{{ .FirstName }} {{ .LastName }}" class=""/>
+									<p class="underline text-sm">{{ .FirstName }} {{ .LastName }}</p>
 							</a>
 							<!-- Add additional fields as needed -->
 						</li>

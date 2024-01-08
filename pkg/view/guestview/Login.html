@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <link rel="stylesheet" href="/public/css/output.css">
     <link rel="stylesheet" href="/public/css/animate.css">
     <script src='https://unpkg.com/htmx.org@1.9.9'></script>
@@ -24,7 +24,7 @@
 
 	
 	<!-- main content  -->
-	<main class="grid">
+	<main class="grid fade-in">
 
 		<!-- login form -->
 		<form hx-indicator="#loading-overlay" class="justify-self fade-in grid p-6 gap-4 md:p-8 md:w-[750px] md:place-self-start" action="/api/user/login" method="POST">

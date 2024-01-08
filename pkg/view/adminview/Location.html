@@ -57,6 +57,22 @@
 			</div>
 		</section>
 
+		<!-- register user form -->
+		<form hx-indicator="#loading-overlay" action="/api/user/register" method="POST" class="justify-self fade-in grid p-6 gap-4 md:p-8 md:w-[750px] md:place-self-start">
+			<h2 class="text-2xl font-bold">Register Users</h2>
+			<p class="text-red text-sm">{{ .RegisterUserErr }}</p>
+			<label class="text-sm" for='firstName'>first name</label>
+			<input class="border rounded text-sm p-1" name='firstName' type='text' />
+			<label class="text-sm" for='lastName'>last name</label>
+			<input class="border rounded text-sm p-1" name='lastName' type='text' />
+			<label class="text-sm" for='email'>email</label>
+			<input class="border rounded text-sm p-1" name='email' type='text' />
+			<input value="{{ .Location.Number }}" type='hidden' name='locationNumber' class="border rounded text-sm p-1" />
+			<label class="text-sm" for='password'>password</label>
+			<input class="border rounded text-sm p-1" type='password' name='password' />
+			<input class="bg-black text-sm rounded text-white py-2 mt-4" type='submit' />
+		</form>
+
 		<!-- users all users -->
 		<section id="location-users" class="fade-in grid p-6 gap-4 md:p-8 md:w-[750px] md:place-self-start">
 			<h2 class="text-2xl font-bold">Location Users</h2>

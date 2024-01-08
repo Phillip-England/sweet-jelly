@@ -24,6 +24,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	adminEmail := os.Getenv("ADMIN_EMAIL")
 	adminPassword := os.Getenv("ADMIN_PASSWORD")
 	if (email == adminEmail && password == adminPassword) {
+		cookie := &http.Cookie{
+			Name: "session-token",
+			Value: os.Getenv("ADMIN_SESSION_TOKEN"),
+			HttpOnly: true,
+			Path: "/",
+		}
+		http.SetCookie(w, cookie)
 		http.Redirect(w, r, "/admin", http.StatusSeeOther)
 		return
 	}

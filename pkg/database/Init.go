@@ -1,15 +1,17 @@
 package database
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
-func Init(init bool) (*sql.DB, error) {
+func Init(resetDbEnv string) (*sql.DB, error) {
 
 		db, err := ConnectDb()
 		if err != nil {
 			return nil, err
 		}
 
-		if init {
+		if resetDbEnv == "true" {
 
 			err = DbDeleteAllTables(db)
 			if err != nil {
@@ -26,18 +28,23 @@ func Init(init bool) (*sql.DB, error) {
 				return nil, err
 			}
 	
-			err = DbCreateTestUser(db)
-			if err != nil {
-				return nil, err
-			}
-	
 			err = DbCreateLocationTable(db)
 			if err != nil {
 				return nil, err
 			}
+
+			err = DbCreateTestLocations(db)
+			if err != nil {
+				return nil, err
+			}
+
+			err = DbCreateTestUsers(db)
+			if err != nil {
+				return nil, err
+			}
+	
 			
 		}
-
 
 		return db, nil
 

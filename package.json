@@ -10,7 +10,8 @@
   },
   "scripts": {
     "dev": "npx nodemon --exec go run main.go --signal SIGTERM",
-    "spill": "gofmt ./ >> Bundle.go"
+    "spill": "gofmt ./ >> Bundle.go",
+    "tailwind": "tailwind -i './public/css/input.css' -o './public/css/output.css' --watch"
   },
   "dependencies": {
     "nodemon": "^3.0.2"

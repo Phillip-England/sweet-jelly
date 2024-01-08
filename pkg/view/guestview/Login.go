@@ -1,32 +1,33 @@
 package guestview
 
 import (
-	"cfasuite/pkg/comp"
 	"cfasuite/pkg/util"
 	"net/http"
 )
 
+type NotFoundData struct {
+	Title string
+}
+
+type LoginData struct {
+	Title string
+	LoginFormErr string
+	EmailInputValue string
+	PasswordInputValue string
+}
+
 func Login(w http.ResponseWriter, r *http.Request) {
 	// handling all 404s
 	if r.URL.Path != "/" {
-		b := util.PageBuilder{
-			Title: "CFA Suite - 404 Not Found",
-		}
-		components := []string{
-			"<h2>404 Not Found</h2>",
-		}
-		b.AddComponents(components)
-		w.Write(b.HtmlBytes())
+		util.RenderTemplate(w, "./pkg/view/guestview/404.html", NotFoundData{
+			Title: "404 Not Found",
+		})
 		return
 	}
-	// handling login page / index page
-	b := util.PageBuilder{
+	util.RenderTemplate(w, "./pkg/view/guestview/Login.html", LoginData{
 		Title: "CFA Suite - Login",
-	}
-	components := []string{
-		"<h1>Login Page</h1>",
-		comp.LoginForm(r.URL.Query().Get("LoginFormErr")),
-	}
-	b.AddComponents(components)
-	w.Write(b.HtmlBytes())
+		LoginFormErr: r.URL.Query().Get("LoginFormErr"),
+		EmailInputValue: util.IfDevModeThen("admin"),
+		PasswordInputValue: util.IfDevModeThen("aspoaspo"),
+	})
 }

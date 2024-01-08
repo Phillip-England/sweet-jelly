@@ -32,7 +32,7 @@ func (b *PageBuilder) HtmlBytes() []byte {
 			<link href=\"https://fonts.googleapis.com/css2?family=Chelsea+Market&display=swap\" rel=\"stylesheet\">
 			<title>%s</title>
 		</head>
-		<body>
+		<body hx-boost='true'>
 			%s
 		</body>
 		</html>

@@ -4,6 +4,7 @@ import (
 	"cfasuite/pkg/database"
 	"cfasuite/pkg/model/usermod"
 	"cfasuite/pkg/mw"
+	"cfasuite/pkg/util"
 	"database/sql"
 	"fmt"
 	"io"
@@ -17,9 +18,12 @@ func Update(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "Failed to get database connection", http.StatusInternalServerError)
         return
     }
+    
+    previousURL := r.URL.Query().Get("previousURL")
+    redirectBadLocationNumberURL := util.AppendQueryParam(previousURL, "UpdateUserFormErr", "must user valid location number")
 
-    // Parse the form data, including the file upload
-    r.ParseMultipartForm(10 << 20) // 10 MB limit for the photo file
+
+    r.ParseMultipartForm(10 << 20)
     photo, _, err := r.FormFile("photo")
     var photoBytes []byte
 
@@ -45,6 +49,14 @@ func Update(w http.ResponseWriter, r *http.Request) {
     email := r.PostForm.Get("email")
     firstName := r.PostForm.Get("firstName")
     lastName := r.PostForm.Get("lastName")
+    family := r.PostForm.Get("family")
+    hobbies := r.PostForm.Get("hobbies")
+    dreams := r.PostForm.Get("dreams")
+    locationNumber, err := util.StringToInt(r.PostForm.Get("locationNumber"))
+    if err != nil {
+        http.Redirect(w, r, redirectBadLocationNumberURL, http.StatusSeeOther)
+        return
+    }
 
     // Fetch the user from the database to get the existing photo
     u := &usermod.Model{
@@ -69,6 +81,10 @@ func Update(w http.ResponseWriter, r *http.Request) {
         FirstName: firstName,
         LastName:  lastName,
         Email:     email,
+        Family: family,
+        Hobbies: hobbies,
+        Dreams: dreams,
+        LocationNumber: locationNumber,
         Photo:     photoBytes,
     }
 
@@ -80,6 +96,5 @@ func Update(w http.ResponseWriter, r *http.Request) {
     }
 
     // Redirect to the previous URL
-    previousURL := r.URL.Query().Get("previousURL")
     http.Redirect(w, r, previousURL, http.StatusSeeOther)
 }

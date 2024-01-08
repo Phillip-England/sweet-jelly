@@ -17,6 +17,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
+// serving public files from ./public
 func HandlerPublicFiles(w http.ResponseWriter, r *http.Request) {
 	filePath := r.URL.Path[len("/public/"):]
 	fullPath := filepath.Join(".", "public", filePath)
@@ -45,10 +46,10 @@ func main() {
 
 	// admin views
 	http.HandleFunc("/admin", mw.MwDb(db, mw.AdminAuth(adminview.Home)))
-	http.HandleFunc("/admin/users", mw.MwDb(db, adminview.Users))
-	http.HandleFunc("/admin/user/", mw.MwDb(db, adminview.User))
-	http.HandleFunc("/admin/locations", mw.MwDb(db, adminview.Locations))
-	http.HandleFunc("/admin/location/", mw.MwDb(db, adminview.Location))
+	http.HandleFunc("/admin/users", mw.MwDb(db, mw.AdminAuth(adminview.Users)))
+	http.HandleFunc("/admin/user/", mw.MwDb(db, mw.AdminAuth(adminview.User)))
+	http.HandleFunc("/admin/locations", mw.MwDb(db, mw.AdminAuth(adminview.Locations)))
+	http.HandleFunc("/admin/location/", mw.MwDb(db, mw.AdminAuth(adminview.Location)))
 
 	// app views
 	http.HandleFunc("/app", mw.MwDb(db, mw.Auth(appview.Home)))

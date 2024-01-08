@@ -668,6 +668,14 @@ video {
   height: 4rem;
 }
 
+.h-48 {
+  height: 12rem;
+}
+
+.h-\[200px\] {
+  height: 200px;
+}
+
 .w-32 {
   width: 8rem;
 }
@@ -694,6 +702,14 @@ video {
 
 .w-16 {
   width: 4rem;
+}
+
+.w-48 {
+  width: 12rem;
+}
+
+.w-\[400px\] {
+  width: 400px;
 }
 
 .max-w-\[200px\] {
@@ -836,6 +852,11 @@ video {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
+.object-cover {
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 
 .p-1 {

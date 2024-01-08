@@ -48,30 +48,26 @@
 	<!-- main content  -->
 	<main class="grid">
 
-<!-- user details -->
-<section class="fade-in grid p-6 gap-4 md:p-8 md:w-[750px] md:place-self-start">
+		<!-- user details -->
+		<section class="fade-in grid p-6 gap-4 md:p-8 md:w-[750px] md:place-self-start">
 
-    <div class="flex items-center justify-between">
-        <div class="flex items-center">
-            <img src="{{ if .User.NoPhoto }}/public/img/person.jpg{{ else }}data:image/png;base64,{{ .User.PhotoBase64 }}{{ end }}"
-                 alt="{{ .User.FirstName }} {{ .User.LastName }}"
-                 class="w-16 h-16 rounded-full border-2 border-gray-300">
-            <h2 class="text-2xl font-bold ml-4">{{ .User.FirstName }} {{ .User.LastName }}</h2>
-        </div>
-    </div>
+			<div class="flex flex-col gap-4">
+				<h2 class="text-2xl font-bold">{{ .User.FirstName }} {{ .User.LastName }}</h2>
+				<img src="{{ if .User.NoPhoto }}/public/img/person.jpg{{ else }}data:image/png;base64,{{ .User.PhotoBase64 }}{{ end }}" alt="{{ .User.FirstName }} {{ .User.LastName }}"/>
+			</div>
 
-    <div class="mt-4">
-        <p class="text-sm"><strong>ID:</strong> {{ .User.ID }}</p>
-        <p class="text-sm"><strong>First Name:</strong> {{ .User.FirstName }}</p>
-        <p class="text-sm"><strong>Last Name:</strong>  {{ .User.LastName }}</p>
-        <p class="text-sm"><strong>Email:</strong> {{ .User.Email }}</p>
-        <p class="text-sm"><strong>Location Number:</strong> {{ .User.LocationNumber }}</p>
-        <p class="text-sm"><strong>Family:</strong> {{ .User.Family }}</p>
-        <p class="text-sm"><strong>Hobbies:</strong> {{ .User.Hobbies }}</p>
-        <p class="text-sm"><strong>Dreams:</strong> {{ .User.Dreams }}</p>
-    </div>
+			<div class="mt-4">
+				<p class="text-sm"><strong>ID:</strong> {{ .User.ID }}</p>
+				<p class="text-sm"><strong>First Name:</strong> {{ .User.FirstName }}</p>
+				<p class="text-sm"><strong>Last Name:</strong>  {{ .User.LastName }}</p>
+				<p class="text-sm"><strong>Email:</strong> {{ .User.Email }}</p>
+				<p class="text-sm"><strong>Location Number:</strong> {{ .User.LocationNumber }}</p>
+				<p class="text-sm"><strong>Family:</strong> {{ .User.Family }}</p>
+				<p class="text-sm"><strong>Hobbies:</strong> {{ .User.Hobbies }}</p>
+				<p class="text-sm"><strong>Dreams:</strong> {{ .User.Dreams }}</p>
+			</div>
 
-</section>
+		</section>
 
 		<!-- update user form -->
 		<form hx-indicator="#loading-overlay" action='/api/user/update?previousURL={{ .PreviousURL }}' method='POST' enctype='multipart/form-data' class="fade-in grid p-6 gap-4 md:p-8 md:w-[750px] md:place-self-start">

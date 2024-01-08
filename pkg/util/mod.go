@@ -1,7 +1,11 @@
 package util
 
 import (
+	"bytes"
 	"encoding/base64"
+	"image"
+	"image/jpeg"
+	"io"
 	"math/rand"
 	"net/http"
 	"net/url"
@@ -11,6 +15,7 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/nfnt/resize"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -95,4 +100,23 @@ func ReadFile(filePath string) ([]byte, error) {
 		return nil, err
 	}
 	return content, nil
+}
+
+// resizeAndCompress resizes the image to the specified width and compresses it
+func ResizeAndCompress(photo io.Reader, width uint) (io.Reader, error) {
+    img, _, err := image.Decode(photo)
+    if err != nil {
+        return nil, err
+    }
+
+    resizedImg := resize.Resize(width, 0, img, resize.Lanczos3)
+
+    // Compress the image (you may adjust the compression level)
+    var compressedPhoto bytes.Buffer
+    err = jpeg.Encode(&compressedPhoto, resizedImg, &jpeg.Options{Quality: 80})
+    if err != nil {
+        return nil, err
+    }
+
+    return &compressedPhoto, nil
 }

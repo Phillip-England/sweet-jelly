@@ -61,16 +61,12 @@
 		<section id="location-users" class="fade-in grid p-6 gap-4 md:p-8 md:w-[750px] md:place-self-start">
 			<h2 class="text-2xl font-bold">Location Users</h2>
 			{{ if .Users }}
-				<ul class="flex flex-col gap-4">
+				<ul class="flex flex-col flex-wrap gap-4">
 					{{ range .Users }}
-						<li class="flex rounded border bg-white text-black hover:bg-black hover:text-white items-center">
-							<a hx-indicator="#loading-overlay" href="/admin/user/{{ .ID }}" class="flex items-center w-full p-4">
-								{{ if .NoPhoto }}
-									<img src="/public/img/person.jpg" alt="{{ .FirstName }} {{ .LastName }}" class="w-10 h-10 rounded-full mr-4">
-								{{ else }}
-									<img src="data:image/png;base64,{{ .PhotoBase64 }}" alt="{{ .FirstName }} {{ .LastName }}" class="w-10 h-10 rounded-full mr-4">
-								{{ end }}
-								<p>{{ .FirstName }} {{ .LastName }}</p>
+						<li class="flex rounded border bg-white text-black hover:bg-black hover:text-white items-center p-6">
+							<a hx-indicator="#loading-overlay" href="/admin/user/{{ .ID }}" class="flex flex-col gap-4">
+									<h2 class="text-2xl font-bold">{{ .FirstName }} {{ .LastName }}</h2>
+									<img src="{{ if .NoPhoto }}/public/img/person.jpg{{ else }}data:image/png;base64,{{ .PhotoBase64 }}{{ end }}" alt="{{ .FirstName }} {{ .LastName }}" class=""/>
 							</a>
 							<!-- Add additional fields as needed -->
 						</li>
